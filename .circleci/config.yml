@@ -20,7 +20,7 @@ jobs:
       - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
       - run: docker build -t udagram-api-feed ./udagram-api-feed
       - run: docker tag udagram-api-feed nguyentruonggiang210/udagram-api-feed:v1
-      - run: push nguyentruonggiang210/udagram-api-feed:v1
+      - run: docker push nguyentruonggiang210/udagram-api-feed:v1
   deploy-user:
     docker:
       - image: cimg/node:14.21.0
@@ -32,7 +32,7 @@ jobs:
       - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
       - run: docker build -t udagram-api-user ./udagram-api-user
       - run: docker tag udagram-api-user nguyentruonggiang210/udagram-api-user:v1
-      - run: push nguyentruonggiang210/udagram-api-user:v1
+      - run: docker push nguyentruonggiang210/udagram-api-user:v1
   deploy-frontend:
     docker:
       - image: cimg/node:14.21.0
@@ -44,7 +44,7 @@ jobs:
       - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
       - run: docker build -t udagram-frontend ./udagram-frontend
       - run: docker tag udagram-frontend nguyentruonggiang210/udagram-frontend:v1
-      - run: push nguyentruonggiang210/udagram-frontend:v1
+      - run: docker push nguyentruonggiang210/udagram-frontend:v1
   deploy-reverseproxy:
     docker:
       - image: cimg/node:14.21.0
@@ -56,7 +56,7 @@ jobs:
       - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
       - run: docker build -t udagram-reverseproxy ./udagram-reverseproxy
       - run: docker tag udagram-reverseproxy nguyentruonggiang210/udagram-reverseproxy:v1
-      - run: push nguyentruonggiang210/udagram-reverseproxy:v1
+      - run: docker push nguyentruonggiang210/udagram-reverseproxy:v1
 
 workflows: 
   build_deploy:

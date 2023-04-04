@@ -1,0 +1,67 @@
+# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
+version: 2.1
+
+# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
+# See: https://circleci.com/docs/2.0/orb-intro/
+orbs:
+  node: circleci/node@4.7
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+jobs:
+  deploy-feed:
+    docker:
+      - image: cimg/node:14.21.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
+      - run: docker build -t udagram-api-feed ./udagram-api-feed
+      - run: docker tag udagram-api-feed nguyentruonggiang210/udagram-api-feed:v1
+      - run: push nguyentruonggiang210/udagram-api-feed:v1
+  deploy-user:
+    docker:
+      - image: cimg/node:14.21.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
+      - run: docker build -t udagram-api-user ./udagram-api-user
+      - run: docker tag udagram-api-user nguyentruonggiang210/udagram-api-user:v1
+      - run: push nguyentruonggiang210/udagram-api-user:v1
+  deploy-frontend:
+    docker:
+      - image: cimg/node:14.21.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
+      - run: docker build -t udagram-frontend ./udagram-frontend
+      - run: docker tag udagram-frontend nguyentruonggiang210/udagram-frontend:v1
+      - run: push nguyentruonggiang210/udagram-frontend:v1
+  deploy-reverseproxy:
+    docker:
+      - image: cimg/node:14.21.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run: docker login -u "nguyentruonggiang210" -p "$DOCKERHUB_PASSWORD"
+      - run: docker build -t udagram-reverseproxy ./udagram-reverseproxy
+      - run: docker tag udagram-reverseproxy nguyentruonggiang210/udagram-reverseproxy:v1
+      - run: push nguyentruonggiang210/udagram-reverseproxy:v1
+
+workflows: 
+  build_deploy:
+    jobs:
+      - deploy-feed
+      - deploy-user
+      - deploy-frontend
+      - deploy-reverseproxy

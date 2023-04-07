@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-api-feed
+  labels:
+    app: udagram-api-feed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-api-feed
+  template:
+    metadata:
+      labels:
+        app: udagram-api-feed
+    spec:
+      containers:
+      - name: udagram-api-feed
+        image: nguyentruonggiang210/udagram-api-feed:v1
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        ports:
+        - containerPort: 8080
+        env:
+        - name: AWS_PROFILE
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: AWS_PROFILE
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: JWT_SECRET
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: URL
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: POSTGRES_HOST
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: POSTGRES_DB
+        - name: AWS_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: AWS_BUCKET
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: giang-configmap
+              key: AWS_REGION
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: giang-configmapsecret
+              key: POSTGRES_USERNAME
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: giang-configmapsecret
+              key: POSTGRES_PASSWORD
+              
+        volumeMounts:
+        - name: aws-secret
+          mountPath: /root/.aws/
+          readOnly: true
+      volumes:
+      - name: aws-secret
+        secret:
+          secretName: giang-configmapawssecret
